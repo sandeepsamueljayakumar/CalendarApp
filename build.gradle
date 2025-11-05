@@ -1,8 +1,12 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '6.0.7'
+    id 'jacoco'
 }
 
-group = 'org.example'
+group = 'edu.northeastern'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -10,11 +14,55 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
+
+    // SpotBugs annotations
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+application {
+    mainClass = 'edu.northeastern.calendarapp.Main'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+// CheckStyle configuration
+checkstyle {
+    toolVersion = '10.12.5'
+}
+
+// SpotBugs configuration
+spotbugs {
+    effort = 'max'
+    reportLevel = 'low'
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+        }
+    }
 }
