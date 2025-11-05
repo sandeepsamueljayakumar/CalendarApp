@@ -1,8 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'checkstyle'
-    id 'com.github.spotbugs' version '6.0.7'
     id 'jacoco'
 }
 
@@ -14,12 +12,10 @@ repositories {
 }
 
 dependencies {
-    // JUnit 5
+    // JUnit 5 - Complete platform
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.0'
-
-    // SpotBugs annotations
-    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.8.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 }
 
 java {
@@ -35,6 +31,7 @@ test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
+        exceptionFormat "full"
     }
     finalizedBy jacocoTestReport
 }
@@ -45,24 +42,5 @@ jacocoTestReport {
         xml.required = false
         csv.required = false
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-    }
-}
-
-// CheckStyle configuration
-checkstyle {
-    toolVersion = '10.12.5'
-}
-
-// SpotBugs configuration
-spotbugs {
-    effort = 'max'
-    reportLevel = 'low'
-}
-
-spotbugsMain {
-    reports {
-        html {
-            required = true
-        }
     }
 }

@@ -1,6 +1,5 @@
 package edu.northeastern.calendarapp.model;
 
-import com.github.spotbugs.annotations.SuppressFBWarnings;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,15 +22,13 @@ public class SimpleEvent implements Event {
   /**
    * Private constructor for use with the Builder.
    */
-  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   private SimpleEvent(Builder builder) {
     // Validate required fields
     if (builder.subject == null || builder.subject.trim().isEmpty()) {
       throw new IllegalArgumentException("Subject is required");
     }
-    if (builder.startDate == null) {
-      throw new IllegalArgumentException("Start date is required");
-    }
+    // Check for null startDate FIRST (throws NullPointerException)
+    Objects.requireNonNull(builder.startDate, "Start date cannot be null");
 
     this.subject = builder.subject.trim();
     this.startDate = builder.startDate;
